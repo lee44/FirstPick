@@ -7,4 +7,4 @@ An Android app that chooses which person goes first by selecting a finger
 ![Screenshot_20191113-152013_PickFirst](https://user-images.githubusercontent.com/13184429/68813056-7c79bc00-0629-11ea-8cf1-d54d814a4ad8.jpg)
 
 ## How to Use
-All participants place and hold one finger onto screen. The app will select one finger.
+All participants place and hold one finger onto screen. The app will draw a colored circle for each finger and after a few seconds will hide all circles but one. The finger with the only circle will have been selected first.
