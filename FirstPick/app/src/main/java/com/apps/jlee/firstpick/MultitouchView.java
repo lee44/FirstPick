@@ -2,8 +2,10 @@ package com.apps.jlee.firstpick;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.os.CountDownTimer;
 import android.util.SparseArray;
 import android.view.MotionEvent;
@@ -24,6 +26,7 @@ public class MultitouchView extends View
     CountDownTimer cTimer = null;
     static final int CIRCLE_SIZE = 250;
     int fingers = 0;
+    String text = "Place Fingers Here";
 
     public MultitouchView(Context context)
     {
@@ -41,7 +44,8 @@ public class MultitouchView extends View
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setTextSize(60);
+        textPaint.setTextSize(125);
+        textPaint.setColor(Color.WHITE);
     }
 
     public boolean onTouchEvent(MotionEvent event)
@@ -123,6 +127,19 @@ public class MultitouchView extends View
             canvas.drawCircle(point.x, point.y, CIRCLE_SIZE, mPaint);
         }
         //canvas.drawText("Total pointers: " + mActivePointers.size(), 10, 50, textPaint);
+        if(mActivePointers.size() == 0)
+        {
+            Rect r = new Rect();
+            canvas.getClipBounds(r);
+            int cHeight = r.height();
+            int cWidth = r.width();
+
+            textPaint.setTextAlign(Paint.Align.LEFT);
+            textPaint.getTextBounds(text, 0, text.length(), r);
+            float x = cWidth / 2f - r.width() / 2f - r.left;
+            float y = cHeight / 2f + r.height() / 2f - r.bottom;
+            canvas.drawText(text, x, y, textPaint);
+        }
     }
     void startTimer()
     {
