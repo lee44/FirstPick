@@ -1,5 +1,5 @@
 # FirstPick
-chooses which person goes first by selecting the person's finger
+An Android app that chooses which person goes first by selecting a finger
 
 ## Screenshot
 ![Screenshot_20191113-151928_PickFirst](https://user-images.githubusercontent.com/13184429/68813055-7c79bc00-0629-11ea-8ff7-b0567c8216b8.jpg)
