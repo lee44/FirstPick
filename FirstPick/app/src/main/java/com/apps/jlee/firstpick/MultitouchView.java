@@ -19,14 +19,14 @@ import java.util.Random;
 //http://www.vogella.com/tutorials/AndroidTouch/article.html
 public class MultitouchView extends View
 {
-    SparseArray<PointF> mActivePointers;
-    ArrayList<Integer> list;
-    Map<Integer,Integer> colorMap;
-    Paint mPaint, textPaint;
-    CountDownTimer cTimer = null;
-    static final int CIRCLE_SIZE = 250;
-    int fingers = 0;
-    String text = "Place Fingers Here";
+    private SparseArray<PointF> mActivePointers;
+    private ArrayList<Integer> list;
+    private Map<Integer,Integer> colorMap;
+    private Paint mPaint, textPaint;
+    private CountDownTimer cTimer = null;
+    private static final int CIRCLE_SIZE = 250;
+    private int fingers = 0;
+    private String text = "Place Fingers Here";
 
     public MultitouchView(Context context)
     {
@@ -34,6 +34,7 @@ public class MultitouchView extends View
         initView();
     }
 
+    /*Intialize data structures and instantiate objects*/
     private void initView()
     {
         mActivePointers = new SparseArray<PointF>();
