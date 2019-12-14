@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,10 +24,12 @@ public class MultitouchView extends View
     private ArrayList<Integer> list;
     private Map<Integer,Integer> colorMap;
     private Paint mPaint, textPaint;
-    private CountDownTimer cTimer = null;
+    private CountDownTimer cTimer;
+
     private static final int CIRCLE_SIZE = 250;
-    private int fingers = 0;
+    private static final long startTime = 800;
     private String text = "Place Fingers Here";
+    private boolean isReset = true;
 
     public MultitouchView(Context context)
     {
@@ -63,7 +66,7 @@ public class MultitouchView extends View
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
             {
-                // We have a new pointer. Lets add it to the list of pointers
+                // A new finger has touched screen, add it to the list of pointers
                 PointF f = new PointF();
                 f.x = event.getX(pointerIndex);
                 f.y = event.getY(pointerIndex);
@@ -72,10 +75,12 @@ public class MultitouchView extends View
                 list.add(pointerId);
                 colorMap.put(pointerId,-1);
 
+                cancelTimer();
+
                 break;
             }
             case MotionEvent.ACTION_MOVE:
-            { // a pointer was moved
+            {   // Loops through all the pointers that were moved
                 for (int size = event.getPointerCount(), i = 0; i < size; i++)
                 {
                     PointF point = mActivePointers.get(event.getPointerId(i));
@@ -95,6 +100,7 @@ public class MultitouchView extends View
                 if(list.contains(pointerId))
                     list.remove(list.indexOf(pointerId));
                 colorMap.remove(pointerId);
+                cancelTimer();
 
                 break;
             }
@@ -102,12 +108,7 @@ public class MultitouchView extends View
         //calls the onDraw method so the canvas will redraw everytime this is called.
         invalidate();
 
-        if(fingers != mActivePointers.size())
-        {
-            fingers = mActivePointers.size();
-            cancelTimer();
-        }
-        if(mActivePointers.size() > 1)
+        if(mActivePointers.size() > 1 && isReset)
             startTimer();
 
         return true;
@@ -128,6 +129,8 @@ public class MultitouchView extends View
             canvas.drawCircle(point.x, point.y, CIRCLE_SIZE, mPaint);
         }
         //canvas.drawText("Total pointers: " + mActivePointers.size(), 10, 50, textPaint);
+
+        /*Draws the Place Fingers Here text on screen*/
         if(mActivePointers.size() == 0)
         {
             Rect r = new Rect();
@@ -142,9 +145,12 @@ public class MultitouchView extends View
             canvas.drawText(text, x, y, textPaint);
         }
     }
+
     void startTimer()
     {
-        cTimer = new CountDownTimer(1000, 1000)
+        //First arg is the number of seconds to start counting down from
+        //Second arg is how times onTick() method is called. Since we dont use it, it doesnt matter what we put.
+        cTimer = new CountDownTimer(startTime, 800)
         {
             public void onTick(long millisUntilFinished){}
             public void onFinish()
@@ -159,11 +165,15 @@ public class MultitouchView extends View
             }
         };
         cTimer.start();
+        isReset = false;
     }
     //cancel timer
     void cancelTimer()
     {
         if (cTimer != null)
+        {
             cTimer.cancel();
+            isReset = true;
+        }
     }
 }
