@@ -56,6 +56,13 @@ public class MultitouchView extends View
         randomColors = new RandomColors();
     }
 
+    /*
+    ACTION_DOWN is for the first finger that touches the screen. This starts the gesture. The pointer data for this finger is always at index 0 in the MotionEvent.
+    ACTION_POINTER_DOWN is for extra fingers that enter the screen beyond the first. The pointer data for this finger is at the index returned by getActionIndex().
+    ACTION_POINTER_UP is sent when a finger leaves the screen but at least one finger is still touching it. The last data sample about the finger that went up is at the index returned by getActionIndex().
+    ACTION_UP is sent when the last finger leaves the screen. The last data sample about the finger that went up is at index 0. This ends the gesture.
+    ACTION_CANCEL means the entire gesture was aborted for some reason. This ends the gesture.
+     */
     public boolean onTouchEvent(MotionEvent event)
     {
         // get pointer index of the touch
