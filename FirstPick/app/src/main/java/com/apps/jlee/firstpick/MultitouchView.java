@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
@@ -63,6 +64,7 @@ public class MultitouchView extends View
     ACTION_UP is sent when the last finger leaves the screen. The last data sample about the finger that went up is at index 0. This ends the gesture.
     ACTION_CANCEL means the entire gesture was aborted for some reason. This ends the gesture.
      */
+    @Override
     public boolean onTouchEvent(MotionEvent event)
     {
         // get pointer index of the touch
@@ -70,7 +72,7 @@ public class MultitouchView extends View
         // get pointer ID of the touch
         int pointerId = event.getPointerId(pointerIndex);
         //return an action such as ACTION_DOWN,ACTION_POINTER_DOWN and others.
-        int maskedAction = event.getActionMasked();
+        int maskedAction = MotionEventCompat.getActionMasked(event);
 
         switch (maskedAction)
         {
@@ -105,16 +107,20 @@ public class MultitouchView extends View
             }
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-            case MotionEvent.ACTION_CANCEL:
             {
-                mActivePointers.remove(pointerId);
-                if(list.contains(pointerId))
-                    list.remove(list.indexOf(pointerId));
-                colorMap.remove(pointerId);
-                cancelTimer();
-
+                removeFinger(pointerId);
+                //Log.v("Lakers","ACTION_POINTER_UP Called");
                 break;
             }
+
+            case MotionEvent.ACTION_CANCEL:
+            {
+//                removeFinger(pointerId);
+//                Log.v("Lakers","ACTION_CANCEL Called");
+//                break;
+            }
+            default :
+                return super.onTouchEvent(event);
         }
         //calls the onDraw method so the canvas will redraw everytime this is called.
         invalidate();
@@ -161,7 +167,7 @@ public class MultitouchView extends View
         }
     }
 
-    void startTimer()
+    public void startTimer()
     {
         //First arg is the number of seconds to start counting down from
         //Second arg is how times onTick() method is called. Since we dont use it, it doesnt matter what we put.
@@ -182,14 +188,24 @@ public class MultitouchView extends View
         cTimer.start();
         isReset = false;
     }
+
     //cancel timer
-    void cancelTimer()
+    public void cancelTimer()
     {
         if (cTimer != null)
         {
             cTimer.cancel();
             isReset = true;
         }
+    }
+
+    public void removeFinger(int pointerId)
+    {
+        mActivePointers.remove(pointerId);
+        if(list.contains(pointerId))
+            list.remove(list.indexOf(pointerId));
+        colorMap.remove(pointerId);
+        cancelTimer();
     }
 
     public int generateRandomColor() {
