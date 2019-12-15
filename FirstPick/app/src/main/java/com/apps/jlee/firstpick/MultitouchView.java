@@ -25,9 +25,11 @@ public class MultitouchView extends View
     private Map<Integer,Integer> colorMap;
     private Paint mPaint, textPaint;
     private CountDownTimer cTimer;
+    private RandomColors randomColors;
 
     private static final int CIRCLE_SIZE = 250;
     private static final long startTime = 800;
+    final Random mRandom = new Random(System.currentTimeMillis());
     private String text = "Place Fingers Here";
     private boolean isReset = true;
 
@@ -50,6 +52,8 @@ public class MultitouchView extends View
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setTextSize(125);
         textPaint.setColor(Color.WHITE);
+
+        randomColors = new RandomColors();
     }
 
     public boolean onTouchEvent(MotionEvent event)
@@ -123,7 +127,11 @@ public class MultitouchView extends View
             int pointerID_key = mActivePointers.keyAt(i);
 
             if(colorMap.get(pointerID_key) == -1)
+            {
+                //colorMap.put(pointerID_key,randomColors.getColor());
                 colorMap.put(pointerID_key,((int)(Math.random()*16777215)) | (0xFF << 24));
+                //colorMap.put(pointerID_key,generateRandomColor());
+            }
 
             mPaint.setColor(colorMap.get(pointerID_key));
             canvas.drawCircle(point.x, point.y, CIRCLE_SIZE, mPaint);
@@ -175,5 +183,20 @@ public class MultitouchView extends View
             cTimer.cancel();
             isReset = true;
         }
+    }
+
+    public int generateRandomColor() {
+        // This is the base color which will be mixed with the generated one
+        final int baseColor = Color.WHITE;
+
+        final int baseRed = Color.red(baseColor);
+        final int baseGreen = Color.green(baseColor);
+        final int baseBlue = Color.blue(baseColor);
+
+        final int red = (baseRed + mRandom.nextInt(256)) / 2;
+        final int green = (baseGreen + mRandom.nextInt(256)) / 2;
+        final int blue = (baseBlue + mRandom.nextInt(256)) / 2;
+
+        return Color.rgb(red, green, blue);
     }
 }
